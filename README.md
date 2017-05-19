@@ -1,7 +1,7 @@
 # StockSQLAlchemy
 ## Task to do
 
-Task is to implement web application to list all stocks from give database and calculate and show on web page the company/stock specific share price growths in user defind period.
+Task is to implement a web application to list all stocks from given SQLite database and calculate and show on web page the company/stock specific share price growths in user defind period.
 
 
 # The solution
@@ -9,7 +9,7 @@ Task is to implement web application to list all stocks from give database and c
 ## Used technologies
 
 PYTHON, FLASK, SQLALCHEMY, SQLite.
-And of course we used python virtualenv.
+And of course python virtualenv.
 
 ## Create the environment in ubuntu
 
