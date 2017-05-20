@@ -1,5 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
+<script>
+function validateForm() {
+    var x = (new Date(document.forms["myForm"]["alkupvm"].value)).getTime();
+    var y = (new Date(document.forms["myForm"]["loppupvm"].value)).getTime();
+
+    console.log("date-test ",z );
+    console.log(document.forms["myForm"]["alkupvm"].value, " x ",x );
+    console.log(document.forms["myForm"]["loppupvm"].value," y ",y );
+    if ( x <= 0 || y <= 0 || y <= x ) {
+        alert(" Incorrect time stamp ");
+        return false;
+    }
+} 
+</script>
+{% include "flash_messages.html" %}
   <head>
     <META http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>stocks.db</title>
@@ -49,12 +64,12 @@
 <br>
 <br>
 <p> To see share changes define the period </p> 
-<form action="/showShares/" method="post" >
+<form action="/showShares/" method="post" name="myForm" onsubmit="return validateForm()">
   Start date<br>
-  <input type="date" name="alkupvm" value=yyyy-mm-dd>
+  <input type="text" name="alkupvm" value="yyyy-mm-dd, since 1970-01-01 " required>
   <br>
   End date<br>
-  <input type="text" name="loppupvm" value="yyyy-mm-dd">
+  <input type="text" name="loppupvm" value="yyyy-mm-dd" required>
   <br><br>
   <input type="submit" value="Submit">
 </form> 
