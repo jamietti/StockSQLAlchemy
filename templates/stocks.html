@@ -5,7 +5,6 @@ function validateForm() {
     var x = (new Date(document.forms["myForm"]["alkupvm"].value)).getTime();
     var y = (new Date(document.forms["myForm"]["loppupvm"].value)).getTime();
 
-    console.log("date-test ",z );
     console.log(document.forms["myForm"]["alkupvm"].value, " x ",x );
     console.log(document.forms["myForm"]["loppupvm"].value," y ",y );
     if ( x <= 0 || y <= 0 || y <= x ) {
