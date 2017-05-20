@@ -8,7 +8,7 @@ Task is to implement a web application to list all stocks from given SQLite data
 
 ## Used technologies
 
-PYTHON, FLASK, SQLALCHEMY, SQLite.
+PYTHON, FLASK, SQLALCHEMY, CSS, HTML, SQLite.
 And of course python virtualenv.
 
 ## Create the environment in ubuntu
