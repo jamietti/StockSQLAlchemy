@@ -9,7 +9,7 @@ function validateForm() {
     console.log(document.forms["myForm"]["alkupvm"].value, " x ",x );
     console.log(document.forms["myForm"]["loppupvm"].value," y ",y );
     if ( x <= 0 || y <= 0 || y <= x ) {
-        alert(" Incorrect time stamp ");
+        alert(" Incorrect time stamp or range ");
         return false;
     }
 } 
@@ -66,7 +66,7 @@ function validateForm() {
 <p> To see share changes define the period </p> 
 <form action="/showShares/" method="post" name="myForm" onsubmit="return validateForm()">
   Start date<br>
-  <input type="text" name="alkupvm" value="yyyy-mm-dd, since 1970-01-01 " required>
+  <input type="text" name="alkupvm" value="yyyy-mm-dd" required>
   <br>
   End date<br>
   <input type="text" name="loppupvm" value="yyyy-mm-dd" required>
