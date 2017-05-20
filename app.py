@@ -30,19 +30,32 @@ def showShares():
   loppu=request.form['loppupvm']
  
   kasvut={}
-  try:
-    for stock_id in db.session.query(Stocks):
+
+  for stock_id in db.session.query(Stocks):
+    try:
       eka = db.session.query(Stockvalues).filter(Stockvalues.stockId==stock_id.id,Stockvalues.valueDate >= pd.to_datetime(alku)).order_by(Stockvalues.valueDate).first()
-      alkuarvo=eka.close
-      pienin=eka.valueDate
-      for apu in db.session.query(Stockvalues).filter(Stockvalues.stockId==stock_id.id,Stockvalues.valueDate <= pd.to_datetime(loppu)).order_by(Stockvalues.valueDate):
+    except Exception as e:
+      return (e.args[0], "error")
+    alkuarvo=eka.close
+    pienin=eka.valueDate
+    try: 
+      ret= db.session.query(Stockvalues).filter(Stockvalues.stockId==stock_id.id,Stockvalues.valueDate <= pd.to_datetime(loppu)).order_by(Stockvalues.valueDate).all()
+    except Exception as e:
+      return (e.args[0], "error")
+    if ret:
+      for apu in ret:
         pass
-      suurin=apu.valueDate
-      loppuarvo=apu.close
-      kasvut[ stock_id.id ] = ( loppuarvo - alkuarvo )/alkuarvo * 100    
-    sorted_kasvut=sorted(kasvut.items(),key=lambda x: (-x[1], x[0]))
-  except Exception as e:
-    return (e.args[0], "error")
+      if apu:  
+      	suurin=apu.valueDate
+      	loppuarvo=apu.close
+      	kasvut[ stock_id.id ] = ( loppuarvo - alkuarvo )/alkuarvo * 100
+      else:
+        return("No stock values found for given period")
+    else:
+      return("No stock values found for given period")    
+  sorted_kasvut=sorted(kasvut.items(),key=lambda x: (-x[1], x[0]))
+#  except Exception as e:
+#    return (e.args[0], "error")
   data = list()     
   for kasvu in sorted_kasvut:
     stock=db.session.query(Stocks).filter(Stocks.id==list(kasvu)[0]).first()
