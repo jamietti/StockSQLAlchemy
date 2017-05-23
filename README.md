@@ -20,7 +20,7 @@ And of course python virtualenv.
 
 ## Run the service
 
-Before you run the service you have create a virtual environment.
+Before you run the service you have to create a virtual environment.
 In StockSQLAlchemy directory give commands
 
     virtualenv venv
