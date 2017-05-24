@@ -1,0 +1,88 @@
+from unittest import TestCase
+
+from utility.xml_helper import MyElementTree
+from converter.json_to_xml import ItemList, OrderedList, Parameter
+
+
+class SimpleRamlVerifier(TestCase):
+    def runTest(self):
+        self.root = None
+
+    @staticmethod
+    def instantiate(xml_in):
+        instance = SimpleRamlVerifier()
+        instance.root = MyElementTree.iterparse(xml_in, strip_namespaces=True).root
+        return instance
+
+    def locate(self, search_criteria, root=None):
+        root = self.root if not root else root
+        try:
+            tag, na_name, na_value = search_criteria  # tag + naming attribute
+            return [x for x in self.root.iter(tag) if x.attrib.get(na_name) == na_value]
+        except ValueError:
+            return root.iter(search_criteria)  # tag only
+
+    def assert_managed_object(self, mo):
+        elems = self.locate(('managedObject', 'distName', mo.name))
+        self.assertEqual(len(elems), 1, msg='could not locate mo %s' % mo.name)
+        self.assert_attributes(mo, elems[0])
+        self.assert_parameters(mo, elems[0])
+        self.assert_item_lists(mo, elems[0])
+        self.assert_ordered_lists(mo, elems[0])
+
+    def assert_attributes(self, mo_obj, mo_elem):
+        for attr in mo_obj.attributes:
+            self.assertEqual(attr.value, mo_elem.attrib.get(attr.name), msg='%s <> %s, %s/%s' % (
+                              attr.value, mo_elem.attrib.get(attr.name), mo_obj.name, attr.name))
+
+    def assert_p(self, mo, p_obj_or_value, p_elem, list_name=None):
+        try:
+            p_name = p_obj_or_value.name
+            p_value = p_obj_or_value.value
+        except AttributeError:
+            p_name = ''
+            p_value = p_obj_or_value
+        l_str = '/%s' % list_name if list_name else ''
+        elem_value = p_elem.text if p_elem.text is not None else ''
+        self.assertEqual(str(p_value), elem_value, msg='%s <> %s, %s%s/%s' % (
+                                 p_value, elem_value, mo.name, l_str, p_name))
+
+    def assert_parameters(self, mo_obj, mo_elem):
+        p_elems = mo_elem.findall('p')
+        for param in [param for param in mo_obj.parameters if isinstance(param, Parameter)]:
+            p_found = False
+            for p in [p for p in p_elems if p.attrib.get('name') == param.name]:
+                self.assert_p(mo_obj, param, p)
+                p_found = True
+            self.assertTrue(p_found, msg='mo %s parameter %s not found' % (mo_obj.name, param.name))
+
+    def assert_item_lists(self, mo_obj, mo_elem):
+        item_lists = [l for l in mo_obj.parameters if isinstance(l, ItemList)]
+        for list_elem in [le for le in mo_elem.findall('list') if le.find('item')]:
+            list_found = False
+            for list_obj in [lo for lo in item_lists if lo.name == list_elem.attrib.get('name')]:
+                list_found = True
+                item_elements = list_elem.findall('item')
+                self.assertEqual(len(list_obj.items), len(item_elements), msg='list length differs %s/%s' % (
+                                                                                 mo_obj.name, list_obj.name))
+
+                for item_obj, item_elem in zip(list_obj.items, item_elements):
+                    for p_obj, p_elem in zip(item_obj, item_elem.findall('p')):
+                        self.assert_p(mo_obj, p_obj, p_elem, list_obj.name)
+
+            self.assertTrue(list_found, msg='mo %s list %s not found' % (mo_obj.name, list_elem.attrib.get('name')))
+
+    def assert_ordered_lists(self, mo_obj, mo_elem):
+        ordered_lists = [l for l in mo_obj.parameters if isinstance(l, OrderedList)]
+        for list_elem in [le for le in mo_elem.findall('list') if le.findall('p')]:
+            list_found = False
+            for list_obj in [lo for lo in ordered_lists if lo.name == list_elem.attrib.get('name')]:
+                list_found = True
+                p_elements = list_elem.findall('p')
+                self.assertEqual(len(list_obj.values), len(p_elements), msg='list length differs %s/%s' % (
+                                                                               mo_obj.name, list_obj.name))
+
+                for p_value, p_elem in zip(list_obj.values, p_elements):
+                    self.assert_p(mo_obj, p_value, p_elem, list_obj.name)
+
+            self.assertTrue(list_found, msg='mo %s list %s not found' % (mo_obj.name, list_elem.attrib.get('name')))

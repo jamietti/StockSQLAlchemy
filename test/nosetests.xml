@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?><testsuite name="nosetests" tests="3" errors="0" failures="0" skip="0"><testcase classname="test_bck.test_stocks.StocksTestCase" name="test_access_noredirect" time="0.066"></testcase><testcase classname="test_bck.test_stocks.StocksTestCase" name="test_correct_format" time="0.096"><system-out><![CDATA[request.form:  ImmutableMultiDict([('alkupvm', u'2015-11-5'), ('loppupvm', u'2015-11-9')])
+]]></system-out></testcase><testcase classname="test_bck.test_stocks.StocksTestCase" name="test_incorrect_format" time="0.010"><system-out><![CDATA[request.form:  ImmutableMultiDict([('alkupvm', u'2015-99-5'), ('loppupvm', u'2015-11-9')])
+rv.data  month must be in 1..12
+]]></system-out></testcase></testsuite>

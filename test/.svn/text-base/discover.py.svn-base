@@ -1,0 +1,18 @@
+import os
+import unittest
+from utility.settings import project_root
+
+
+def discover_tests(test_type="functional", pattern="test*.py"):
+    """ Discover and load all tests for given test type in all files matching the file pattern """
+    suite = unittest.TestSuite()
+    for path, dirs, files in os.walk(project_root):
+        for utdir in (utdir for utdir in dirs if utdir == test_type and path.endswith('test')):
+            utpath = os.path.join(path, utdir)
+            for uts in (uts for uts in unittest.defaultTestLoader.discover(utpath, pattern=pattern,
+                                                                           top_level_dir=project_root)):
+                for test_suite in uts:
+                    suite.addTests(test_suite)
+
+    return suite
+
