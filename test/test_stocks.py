@@ -21,10 +21,10 @@ class StocksTestCase(TestCase):
 
     def setUp(self):
         self.test_app = app.test_client()
- 
-    def tearDown(self):
-        pass
 
+    def tearDown(self):
+        pass    
+        
     def test_access_noredirect(self):
         rv = self.test_app.get('/')
         self.assertEqual(rv.status_code,200)
@@ -49,29 +49,3 @@ class StocksTestCase(TestCase):
 if __name__ == '__main__':
     import nose
     nose.main(defaultTest=__name__)
-
-#from model import app
-#class AppTests(TestCase):
-
-#    def create_app(self):
-#        app = Flask(__name__)
-#        app.config['TESTING'] = True
-#        app.secret_key = 'some_secret'
-#        SQLALCHEMY_DATABASE_URI = 'sqlite://'
-#        return app
-
-#    def setUp(self):
-#        self.test_app = app.test_client()
-
-#    def tearDown(self):
-#        pass
-
-#    def create_db_and_data():
-#        print "CREATING"
-#        db.create_all()
-
-#    def test_shop_responsing_with_cookie_ok(self):
-#        #Just to test that everything works, checks also cookie
-#        result = self.test_app.get('/')
-#        self.assertEqual(result.status_code, 200)
-
