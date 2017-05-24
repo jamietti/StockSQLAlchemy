@@ -45,8 +45,6 @@ class StocksTestCase(TestCase):
                           2)
         db.session.add(new_stock_value)
 
-        
-
         new_stock_value = Stockvalues(datetime.datetime(2017, 5, 24 ),
                           1,
                           1111,
@@ -87,7 +85,6 @@ class StocksTestCase(TestCase):
         self.assertEqual(rv.status_code,200)
         self.assertNotIn('N/A', rv.data)
         return rv
-
 
     def test_incorrect_format(self):
         rv = self.test_app.post('/showShares/', data=dict(
