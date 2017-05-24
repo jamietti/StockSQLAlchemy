@@ -5,13 +5,15 @@ This directory includes some examples of python unit tests
 
 
 
-## Run the test
+## To run the test
 
-Before you run the service you have create a virtual environment.
-In StockSQLAlchemy directory give commands
 
-    virtualenv venv
+Activate virtual environment StockSQLAlchemy directory by giving command
+
+    cd StockSQLAlchemy
     source venv/bin/activate
+
+If the venv doesn't exists there, see the instruction in StockSQLAlchemy/README.md 
 
 Go to test directory
 
