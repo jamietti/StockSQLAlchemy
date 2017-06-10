@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<script type="text/javascript">
+window.onload = function () { 
+   var oTable = document.getElementById('dataTable');
+   var i;
+   var rowLength = oTable.rows.length;
+   for (i = 1; i < rowLength; i++) {
+       var oCells = oTable.rows.item(i).cells;
+       if (oCells[2].innerHTML != "N/A") {
+	   if (oCells[2].innerHTML < 0) {
+              oCells[2].style.color = '#8B008B';
+           }       
+           if (oCells[2].innerHTML < -10) {
+              window.alert("bolder");
+              oCells[2].style.fontWeight = 'bolder';
+           }  
+       }  
+   }
+} 
+</script>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>stocks.db</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/mystyle.css">
+  </head>
+<h1>Share Growths </h1>
+<br>
+<br>
+<h>Period {{ alku }} - {{ loppu }}: </h>
+<br>
+<br>
+<table id=dataTable>
+<th width="25%">Company</th>
+<th width="25%">Industry Field</th>
+<th width="25%">Growth %</th>
+
+</thead>
+{% for row in data %}
+<tr id="myrow">
+{% for col in row %}
+<!--{% if col != "N/A" and col | int < 0 %}
+<td><span style="color:red"> {{ col }} </span> </td>
+{% else %}
+<td> {{ col }} </span> </td>
+{% endif %}-->
+<td> {{ col }} </td>
+{% endfor %}
+</tr>
+{% endfor %}
+
+</html>

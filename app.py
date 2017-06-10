@@ -28,7 +28,7 @@ def main():
 def showShares():
   alku=request.form['alkupvm']
   loppu=request.form['loppupvm']
-  kasvut={}
+  growths={}
   for stock_id in db.session.query(Stocks):
     try:
       eka = db.session.query(Stockvalues).filter(Stockvalues.stockId==stock_id.id,Stockvalues.valueDate >= pd.to_datetime(alku)).order_by(Stockvalues.valueDate).first()
@@ -44,21 +44,21 @@ def showShares():
       for apu in ret:
         pass  
       loppuarvo=apu.close
-      kasvut[ stock_id.id ] = ( loppuarvo - alkuarvo )/alkuarvo * 100 
+      growths[ stock_id.id ] = ( loppuarvo - alkuarvo )/alkuarvo * 100 
     else:
-      kasvut[ stock_id.id ] = 0
-  sorted_kasvut=sorted(kasvut.items(),key=lambda x: (-x[1], x[0]))
+      growths[ stock_id.id ] = 0
+  sorted_growths=sorted(growths.items(),key=lambda x: (-x[1], x[0]))
 
   data = list()     
-  for kasvu in sorted_kasvut:
-    stock=db.session.query(Stocks).filter(Stocks.id==list(kasvu)[0]).first()
+  for growth in sorted_growths:
+    stock=db.session.query(Stocks).filter(Stocks.id==list(growth)[0]).first()
     company=db.session.query(Companies).filter(Companies.companyId==stock.id).first()   
-    if list(kasvu)[1]==0:
+    if list(growth)[1]==0:
       kid="N/A"
     else:
-      kid=list(kasvu)[1]
+      kid=list(growth)[1]
     data.append((company.companyName, company.industryField, kid))
-  return render_template('kasvut.html',alku=alku, loppu=loppu, data=data)
+  return render_template('growths.html',alku=alku, loppu=loppu, data=data)
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0')
