@@ -1,12 +1,7 @@
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////root/stocks8'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stocks.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+from app import app, db
 
 class Companies(db.Model):
     companyId = db.Column(db.Integer, primary_key=True)
@@ -21,13 +16,11 @@ class Companies(db.Model):
     def __repr__(self):
         return '<Companies %r>' % self.companyName
     def as_dict(self):
-	return {'companyId' : self.companyId, 'companyName' : self.companyName, 'industryField' : self.industryField, 'country' : self.country}
+        return {'companyId' : self.companyId, 'companyName' : self.companyName, 'industryField' : self.industryField, 'country' : self.country}
     def as_tuple(self):    
         company, stock = db.session.query(Companies, Stocks
                                                  ).filter(Stocks.companyId == self.companyId).first()
                       
-        print "model: comp ", company
-        print "model: st ", stock
         return (company.companyName, stock.ticker, company.industryField)
 
 class Stocks(db.Model):
@@ -70,7 +63,6 @@ class Stockvalues(db.Model):
     def as_tuple(self):
         value = db.session.query(Stockvalues).first()
         return (value.valueDate, value.stockId, value.open, value.close, value.volume, value.valueId)
-
 
     def __repr__(self):
         return '<Stockvalues %r>' % self.stockId

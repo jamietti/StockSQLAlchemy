@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, json, flash
-from model import db, app, Companies, Stocks, Stockvalues 
+from flask import Flask, render_template, request, json, flash 
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc
@@ -9,16 +8,23 @@ from dateutil.parser import parse
 import pandas as pd
 import operator
 
+
+app = Flask(__name__)
+
 #app.config['SQLALCHEMY_ECHO'] = True
 
 app.secret_key = 'some_secret'
 Session(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stocks.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 class ValidationError(Exception):
     pass
 
 @app.route("/",methods=['POST', 'GET'])
 def main():
+  from model import Companies, Stocks, Stockvalues
   data = list()  
   for stock in db.session.query(Stocks):
     data.append(stock.as_tuple())
@@ -26,6 +32,7 @@ def main():
    
 @app.route('/showShares/',methods=['POST'])
 def showShares():
+  from model import Companies, Stocks, Stockvalues
   alku=request.form['alkupvm']
   loppu=request.form['loppupvm']
   growths={}
@@ -61,4 +68,4 @@ def showShares():
   return render_template('growths.html',alku=alku, loppu=loppu, data=data)
 
 if __name__ == "__main__":
-  app.run(host='0.0.0.0')
+  app.run(host='0.0.0.0',port=8000)
